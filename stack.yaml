@@ -1,0 +1,11 @@
+resolver: lts-5.12
+
+packages:
+    - '.'
+
+extra-deps:
+    - accelerate-random-0.15.0.0
+
+flags: {}
+
+extra-package-dbs: []

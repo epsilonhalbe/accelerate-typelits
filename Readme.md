@@ -7,8 +7,8 @@ Synopsis
 This library provides a high level interface to `accelerate` for matrix
 computations.
 
-Usage
------
+Installation
+------------
 
 The simplest way to install this library is using `cabal` or `cabal-sandbox`
 
@@ -47,7 +47,7 @@ matrix-matrix multiplication and `.*^` scalar multiplication of a vector.
 
 Operator precedence is usually the same as the numeric equivalence.
 
-# Examples
+# Example usage
 
 Todo
 

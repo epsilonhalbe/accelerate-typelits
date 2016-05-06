@@ -1,6 +1,5 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -45,75 +44,15 @@ module Data.Array.Accelerate.TypeLits
               where
 
 import qualified Data.Array.Accelerate as A
-import qualified Data.Array.Accelerate.Interpreter as I
 
 import           Data.Proxy (Proxy(..))
-import           GHC.TypeLits ( Nat, KnownNat, natVal)
-import           Data.Array.Accelerate ( (:.)(..), Array
+import           GHC.TypeLits (KnownNat, natVal)
+import           Data.Array.Accelerate.TypeLits.Internal
+import           Data.Array.Accelerate ( (:.)((:.))
                                        , Exp
-                                       , DIM0, DIM1, DIM2, DIM3, Z(Z)
-                                       , IsFloating, IsNum, Elt, Acc
-                                       , All(All), Any(Any)
-                                       )
-
-
-newtype AccScalar a = AccScalar { unScalar :: Acc (Array DIM0 a)}
-                    deriving (Show)
-
--- | A typesafe way to represent an AccVector and its dimension
-newtype AccVector (dim :: Nat) a = AccVector { unVector :: Acc (Array DIM1 a)}
-                                 deriving (Show)
-
-instance forall n a. (KnownNat n, Eq a, Elt a) => Eq (AccVector n a) where
-    v == w = let v' = I.run $ unVector v
-                 w' = I.run $ unVector w
-              in A.toList v' == A.toList w'
-
-
--- | A typesafe way to represent an AccMatrix and its rows/colums
-newtype AccMatrix (rows :: Nat) (cols :: Nat) a = AccMatrix {unMatrix :: Acc (Array DIM2 a)}
-                                                deriving (Show)
-
-instance forall m n a. (KnownNat m, KnownNat n, Eq a, Elt a) => Eq (AccMatrix m n a) where
-    v == w = let v' = I.run $ unMatrix v
-                 w' = I.run $ unMatrix w
-              in A.toList v' == A.toList w'
-
--- | a functor like instance for a functor like instance for Accelerate computations
--- instead of working with simple functions `(a -> b)` this uses (Exp a -> Exp b)
-class AccFunctor f where
-  afmap :: forall a b. (Elt a, Elt b) => (Exp a -> Exp b) -> f a -> f b
-
-instance AccFunctor AccScalar  where
-    afmap f (AccScalar a) = AccScalar (A.map f a)
-
-instance forall n. (KnownNat n) => AccFunctor (AccVector n) where
-    afmap f (AccVector a) = AccVector (A.map f a)
-
-instance forall m n. (KnownNat m, KnownNat n) => AccFunctor (AccMatrix m n) where
-    afmap f (AccMatrix a) = AccMatrix (A.map f a)
-
-mkVector :: forall n a. (KnownNat n, Elt a) => [a] -> Maybe (AccVector n a)
--- | a smart constructor to generate Vectors - returning Nothing
--- if the input list is not as long as the dimension of the Vector
-mkVector as = if length as == n'
-                 then Just $ AccVector (A.use $ A.fromList (Z:.n') as)
-                 else Nothing
-  where n' = fromIntegral $ natVal (Proxy :: Proxy n)
-
-mkMatrix :: forall m n a. (KnownNat m, KnownNat n, Elt a)
-         => [a] -> Maybe (AccMatrix m n a)
--- | a smart constructor to generate Matrices - returning Nothing
--- if the input list is not as long as the "length" of the Matrix, i.e. rows*colums
-mkMatrix as = if length as == m'*n'
-                 then Just $ AccMatrix (A.use $ A.fromList (Z:. m':.n') as)
-                 else Nothing
-  where m' = fromIntegral $ natVal (Proxy :: Proxy m)
-        n' = fromIntegral $ natVal (Proxy :: Proxy n)
-
-mkScalar :: forall a. Elt a => Exp a -> AccScalar a
--- | a smart constructor to generate scalars
-mkScalar = AccScalar . A.unit
+                                       , DIM2, DIM3, Z(Z)
+                                       , IsFloating, IsNum, Elt
+                                       , All(All), Any(Any))
 
 (#*^) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
       => AccMatrix m n a -> AccVector n a -> AccVector n a

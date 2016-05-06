@@ -58,11 +58,11 @@ TODOs
 - write Test cases
    + unit tests
    + property tests
-       * Arbitrary instances
-       * Series instances
+       * Arbitrary instances - DONE
+       * Series instances - DONE
 - write benchmarks
 - write examples
-- write random matrices
+- write random matrices - DONE
 
 Credits
 -------

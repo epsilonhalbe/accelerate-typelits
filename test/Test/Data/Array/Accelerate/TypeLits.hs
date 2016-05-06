@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Test.Data.Accelerate.TypeLits where
+module Test.Data.Array.Accelerate.TypeLits where
 
 import Test.Tasty
 import Test.Tasty.SmallCheck as SC
@@ -9,11 +9,12 @@ import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
 
 import Data.Array.Accelerate.Interpreter (run)
+import Data.Array.Accelerate.TypeLits
+
 import GHC.TypeLits
-import Data.Accelerate.TypeLits
 
 tests :: TestTree
-tests = testGroup "Data.Accelerate.TypeLits" [properties, unitTests]
+tests = testGroup "Data.Array.Accelerate.TypeLits" [properties, unitTests]
 
 properties :: TestTree
 properties = testGroup "Properties" [scProps, qcProps]

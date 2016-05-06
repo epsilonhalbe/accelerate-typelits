@@ -5,7 +5,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE PartialTypeSignatures #-}
-module Data.Accelerate.TypeLits
+module Data.Array.Accelerate.TypeLits
               (
               -- * Types
               AccScalar,

@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Test.Data.Accelerate.TypeLits.Random where
+module Test.Data.Array.Accelerate.TypeLits.Random where
 
 import Test.Tasty
 import Test.Tasty.SmallCheck as SC

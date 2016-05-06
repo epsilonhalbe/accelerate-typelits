@@ -33,8 +33,8 @@ source-repository head
 ---------------------------------------------------------------------------------
 
 library
-  exposed-modules:     Data.Accelerate.TypeLits
-                 ,     Data.Accelerate.TypeLits.Random
+  exposed-modules:     Data.Array.Accelerate.TypeLits
+                 ,     Data.Array.Accelerate.TypeLits.Random
   build-depends:       base >=4.8 && <4.9
                ,       accelerate
                ,       accelerate-random
@@ -51,8 +51,7 @@ test-suite tests
   type:                exitcode-stdio-1.0
   main-is:             Test.hs
   --exposed-modules:
-  other-modules:       Test.Data.Accelerate.TypeLits
-               ,       Test.Data.Accelerate.TypeLits.Random
+  other-modules:       Test.Data.Array.Accelerate.TypeLits
   build-depends:       base >=4.8 && <4.9
                ,       accelerate-typelits
                ,       tasty

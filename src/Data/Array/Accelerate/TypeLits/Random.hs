@@ -2,13 +2,13 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Data.Accelerate.TypeLits.Random
+module Data.Array.Accelerate.TypeLits.Random
                      ( rndMatrix
                      , rndVector
                      , module X
                      ) where
 
-import Data.Accelerate.TypeLits
+import Data.Array.Accelerate.TypeLits
 
 import           GHC.TypeLits
 import           Data.Proxy

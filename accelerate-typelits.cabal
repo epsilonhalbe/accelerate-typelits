@@ -34,7 +34,7 @@ source-repository head
 
 library
   exposed-modules:     Data.Array.Accelerate.TypeLits
-                 ,     Data.Array.Accelerate.TypeLits.Random
+                 ,     Data.Array.Accelerate.TypeLits.System.Random.MWC
   other-modules:       Data.Array.Accelerate.TypeLits.Internal
   build-depends:       base >=4.8 && <4.9
                ,       accelerate

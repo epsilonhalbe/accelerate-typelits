@@ -2,7 +2,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Data.Array.Accelerate.TypeLits.Random
+module Data.Array.Accelerate.TypeLits.System.Random.MWC
                      ( rndMatrixWith
                      , rndVectorWith
                      , module Distributions

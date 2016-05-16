@@ -28,6 +28,11 @@ import           Test.QuickCheck.Arbitrary
 newtype AccScalar a = AccScalar { unScalar :: Acc (Array DIM0 a)}
                     deriving (Show)
 
+instance forall a. (Eq a, Elt a) => Eq (AccScalar a) where
+    s == t = let s' = I.run $ unScalar s
+                 t' = I.run $ unScalar t
+              in A.toList s' == A.toList t'
+
 -- | A typesafe way to represent an AccVector and its dimension
 newtype AccVector (dim :: Nat) a = AccVector { unVector :: Acc (Array DIM1 a)}
                                  deriving (Show)
@@ -86,8 +91,14 @@ mkVector :: forall n a. (KnownNat n, Elt a) => [a] -> Maybe (AccVector n a)
 -- | a smart constructor to generate Vectors - returning Nothing
 -- if the input list is not as long as the dimension of the Vector
 mkVector as = if length as == n'
-                 then Just $ AccVector (A.use $ A.fromList (Z:.n') as)
+                 then Just $ unsafeMkVector as
                  else Nothing
+  where n' = fromIntegral $ natVal (Proxy :: Proxy n)
+
+unsafeMkVector :: forall n a. (KnownNat n, Elt a) => [a] -> AccVector n a
+-- | unsafe smart constructor to generate Vectors
+-- the length of the input list is not checked
+unsafeMkVector as = AccVector (A.use $ A.fromList (Z:.n') as)
   where n' = fromIntegral $ natVal (Proxy :: Proxy n)
 
 mkMatrix :: forall m n a. (KnownNat m, KnownNat n, Elt a)
@@ -95,8 +106,16 @@ mkMatrix :: forall m n a. (KnownNat m, KnownNat n, Elt a)
 -- | a smart constructor to generate Matrices - returning Nothing
 -- if the input list is not as long as the "length" of the Matrix, i.e. rows*colums
 mkMatrix as = if length as == m'*n'
-                 then Just $ AccMatrix (A.use $ A.fromList (Z:. m':.n') as)
+                 then Just $ unsafeMkMatrix as
                  else Nothing
+  where m' = fromIntegral $ natVal (Proxy :: Proxy m)
+        n' = fromIntegral $ natVal (Proxy :: Proxy n)
+
+unsafeMkMatrix :: forall m n a. (KnownNat m, KnownNat n, Elt a)
+         => [a] -> AccMatrix m n a
+-- | unsafe smart constructor to generate Matrices
+-- the length of the input list is not checked
+unsafeMkMatrix as = AccMatrix (A.use $ A.fromList (Z:. m':.n') as)
   where m' = fromIntegral $ natVal (Proxy :: Proxy m)
         n' = fromIntegral $ natVal (Proxy :: Proxy n)
 

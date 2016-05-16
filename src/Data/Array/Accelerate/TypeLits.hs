@@ -16,10 +16,14 @@ module Data.Array.Accelerate.TypeLits
               mkMatrix,
               mkVector,
               mkScalar,
+              unsafeMkMatrix,
+              unsafeMkVector,
               unMatrix,
               unVector,
               unScalar,
               identityMatrix,
+              zeroV,
+              zeroM,
               -- * Functions
               -- ** Scalar & X
               (.*^),
@@ -55,6 +59,50 @@ import           Data.Array.Accelerate ( (:.)((:.))
                                        , DIM2, DIM3, Z(Z)
                                        , IsFloating, IsNum, Elt
                                        , All(All), Any(Any))
+
+identityMatrix :: forall n a. (KnownNat n, IsNum a, Elt a) => AccMatrix n n a
+-- | constructor for the nxn dimensional identity matrix, given by
+--
+-- > ⎛  1  0  …  0  0  ⎞
+-- > ⎜  0  1  …  0  0  ⎟
+-- > ⎜  .    .      .  ⎟
+-- > ⎜  .     .     .  ⎟
+-- > ⎜  .      .    .  ⎟
+-- > ⎜  0  0  …  1  0  ⎟
+-- > ⎝  0  0  …  0  1  ⎠
+
+identityMatrix = AccMatrix $ A.use $ A.fromFunction (Z:.n':.n') aux
+  where aux :: DIM2 -> a
+        aux (Z:.i:.j) = if i == j then 1 else 0
+        n' = fromIntegral $ natVal (Proxy :: Proxy n)
+
+zeroV :: forall n a. (KnownNat n, IsNum a, Elt a) => AccVector n a
+-- | constructor for the n dimensional zero vector, given by
+--
+-- > ⎛ 0 ⎞
+-- > ⎜ . ⎟
+-- > ⎜ . ⎟
+-- > ⎜ . ⎟
+-- > ⎜ . ⎟
+-- > ⎜ . ⎟
+-- > ⎝ 0 ⎠
+
+zeroV = unsafeMkVector $ replicate n' 0
+  where n' = fromIntegral $ natVal (Proxy :: Proxy n)
+
+zeroM :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a) => AccMatrix m n a
+-- | constructor for the mxn dimensional zero matrix, given by
+--
+-- > ⎛  0  0  …  0  0  ⎞
+-- > ⎜  0  0  …  0  0  ⎟
+-- > ⎜  .  .     .  .  ⎟
+-- > ⎜  0  0  …  0  0  ⎟
+-- > ⎝  0  0  …  0  0  ⎠
+
+zeroM = unsafeMkMatrix $ replicate (m'*n') 0
+  where n' = fromIntegral $ natVal (Proxy :: Proxy n)
+        m' = fromIntegral $ natVal (Proxy :: Proxy m)
+
 
 (#*^) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
       => AccMatrix m n a -> AccVector n a -> AccVector n a
@@ -242,12 +290,6 @@ v #**. i | i < 0 = error $ "no negative exponents allowed in matrix exponetiatio
          | otherwise = (v#**. (i-1)) #*# v
 
 infixr 8 #**.
-
-identityMatrix :: forall n a. (KnownNat n, IsNum a, Elt a) => AccMatrix n n a
-identityMatrix = AccMatrix $ A.use $ A.fromFunction (Z:.n':.n') aux
-  where aux :: DIM2 -> a
-        aux (Z:.i:.j) = if i == j then 1 else 0
-        n' = fromIntegral $ natVal (Proxy :: Proxy n)
 
 transpose :: forall m n a. (KnownNat m, KnownNat n, Elt a)
           => AccMatrix m n a -> AccMatrix n m a

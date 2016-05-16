@@ -40,6 +40,8 @@ module Data.Array.Accelerate.TypeLits
               (#**.),
               -- ** Utility functions
               transpose,
+              zipWithV,
+              zipWithM,
               )
               where
 
@@ -251,3 +253,11 @@ transpose :: forall m n a. (KnownNat m, KnownNat n, Elt a)
           => AccMatrix m n a -> AccMatrix n m a
 transpose = AccMatrix . A.transpose . unMatrix
 
+
+zipWithM :: forall m n a b c. (KnownNat m, KnownNat n, Elt a, Elt b, Elt c)
+        => (Exp a -> Exp b -> Exp c) -> AccMatrix m n a -> AccMatrix m n b -> AccMatrix m n c
+zipWithM f ma mb = AccMatrix $ A.zipWith f (unMatrix ma) (unMatrix mb)
+
+zipWithV :: forall n a b c. (KnownNat n, Elt a, Elt b, Elt c)
+        => (Exp a -> Exp b -> Exp c) -> AccVector n a -> AccVector n b -> AccVector n c
+zipWithV f ma mb = AccVector $ A.zipWith f (unVector ma) (unVector mb)

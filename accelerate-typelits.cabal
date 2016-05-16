@@ -47,6 +47,22 @@ library
   default-language:    Haskell2010
 
 ---------------------------------------------------------------------------------
+--                                   Example                                   --
+---------------------------------------------------------------------------------
+
+executable example
+  main-is:             Main.hs
+  build-depends:       base >=4.8 && <4.9
+               ,       accelerate-typelits
+               ,       accelerate
+               ,       accelerate-random
+               ,       mwc-random
+               ,       zlib
+               ,       bytestring
+
+  hs-source-dirs:      example
+  default-language:    Haskell2010
+---------------------------------------------------------------------------------
 --                                    Tests                                    --
 ---------------------------------------------------------------------------------
 

@@ -1,6 +1,7 @@
 Accelerate TypeLits
 ===================
 
+[![Build Status](https://travis-ci.org/epsilonhalbe/accelerate-typelits.svg?branch=master)](https://travis-ci.org/epsilonhalbe/accelerate-typelits)
 Synopsis
 --------
 

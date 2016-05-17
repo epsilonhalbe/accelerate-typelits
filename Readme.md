@@ -14,11 +14,16 @@ Installation
 The simplest way to install this library is using `cabal` or `cabal-sandbox`
 
 ```
+> cabal install accelerate-typelits
+```
+
+If you want to have the most recent version, the project is on github so you can
+checkout the project.
+
+```
 > git clone https://github.com/epsilonhalbe/accelerate-typelits.git
 > cd accelerate-typelits
 > cabal install
->
-> cabal sandbox init
 ```
 
 ---
@@ -32,6 +37,12 @@ The simplest way to install this library is using `cabal` or `cabal-sandbox`
 
 There is also a `stack.yaml` file included, so one can also use [stack][1] in
 order to compile this library.
+
+```
+> git clone https://github.com/epsilonhalbe/accelerate-typelits.git
+> cd accelerate-typelits
+> stack --stack-yaml stack-7.10.yaml build
+```
 
 ---
 
@@ -47,29 +58,6 @@ analogously `^*#` works the other way around. Other examples would be `#*#` for
 matrix-matrix multiplication and `.*^` scalar multiplication of a vector.
 
 Operator precedence is usually the same as the numeric equivalence.
-
-# Example usage
-
-Todo
-
-TODOs
------
-
-- use library for neural network stuff
-   + TODO
-- write Test cases
-   + unit tests
-       * STARTED
-   + property tests
-       * Smallcheck - DONE
-       * Quickcheck - TODO
-       * Arbitrary instances - DONE
-       * Series instances - DONE
-- write benchmarks
-   + TODO
-- write examples
-   + TODO
-- write random matrices - DONE
 
 Credits
 -------

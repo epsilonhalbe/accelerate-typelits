@@ -69,8 +69,8 @@ install:
 script:
   - |
       if [ ${GHC} != head ]; then
-        stack build --no-terminal --flag accelerate:debug
         stack build --no-terminal --haddock --no-haddock-deps
+        stack test --coverage
       else
         cabal install --allow-newer
       fi

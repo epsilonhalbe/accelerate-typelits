@@ -128,15 +128,15 @@ infixl 7 #*^
 
 (^*#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
       => AccVector m a -> AccMatrix m n a -> AccVector n a
--- | the usual matrix-vector product
+-- | the usual vector-matrix product
 --
--- > ⎛x₁⎞T  ⎛w₁₁ w₁₂ … w₁ₙ ⎞    ⎛ x₁*w₁₁ + x₂*w₁₂ + … xₙ*w₁ₙ ⎞
--- > ⎜x₂⎟   ⎜w₂₁ w₂₂ … w₂ₙ ⎟    ⎜ x₁*w₂₁ + x₂*w₂₂ + … xₙ*w₂ₙ ⎟
--- > ⎜. ⎟   ⎜ .   .     .  ⎟    ⎜  .         .           .   ⎟
--- > ⎜. ⎟ ✕ ⎜ .   .     .  ⎟ =  ⎜  .         .           .   ⎟
--- > ⎜. ⎟   ⎜ .   .     .  ⎟    ⎜  .         .           .   ⎟
--- > ⎜. ⎟   ⎜ .   .     .  ⎟    ⎜  .         .           .   ⎟
--- > ⎝xₘ⎠   ⎝wₘ₁ wₘ₂ … wₘₙ ⎠    ⎝ x₁*wₘ₁ + x₂*wₘ₂ + … xₙ*wₘₙ ⎠
+-- > ⎛x₁⎞T  ⎛w₁₁ w₁₂ … w₁ₙ ⎞   ⎛ x₁*w₁₁ + x₂*w₁₂ + … xₙ*w₁ₙ ⎞
+-- > ⎜x₂⎟   ⎜w₂₁ w₂₂ … w₂ₙ ⎟   ⎜ x₁*w₂₁ + x₂*w₂₂ + … xₙ*w₂ₙ ⎟
+-- > ⎜. ⎟   ⎜ .   .     .  ⎟   ⎜  .         .           .   ⎟
+-- > ⎜. ⎟ ✕ ⎜ .   .     .  ⎟ = ⎜  .         .           .   ⎟
+-- > ⎜. ⎟   ⎜ .   .     .  ⎟   ⎜  .         .           .   ⎟
+-- > ⎜. ⎟   ⎜ .   .     .  ⎟   ⎜  .         .           .   ⎟
+-- > ⎝xₘ⎠   ⎝wₘ₁ wₘ₂ … wₘₙ ⎠   ⎝ x₁*wₘ₁ + x₂*wₘ₂ + … xₙ*wₘₙ ⎠
 
 va ^*# ma = let va' = unVector va
                 ma' = unMatrix ma
@@ -148,9 +148,9 @@ va ^*# ma = let va' = unVector va
 
 infixr 7 ^*#
 
-(^+^), (^-^) :: forall n a. (KnownNat n, IsNum a, Elt a)
-             => AccVector n a -> AccVector n a -> AccVector n a
--- | the usual vector addition/subtraction
+(^+^) :: forall n a. (KnownNat n, IsNum a, Elt a)
+      => AccVector n a -> AccVector n a -> AccVector n a
+-- | the usual vector addition
 --
 -- > ⎛v₁⎞   ⎛w₁⎞   ⎛ v₁+w₁ ⎞
 -- > ⎜v₂⎟   ⎜w₂⎟   ⎜ v₂+w₁ ⎟
@@ -158,9 +158,21 @@ infixr 7 ^*#
 -- > ⎜. ⎟ + ⎜. ⎟ = ⎜   .   ⎟
 -- > ⎜. ⎟   ⎜. ⎟   ⎜   .   ⎟
 -- > ⎜. ⎟   ⎜. ⎟   ⎜   .   ⎟
--- > ⎝vₙ⎠   ⎝wₙ⎠   ⎝ vₙ*wₙ ⎠
+-- > ⎝vₙ⎠   ⎝wₙ⎠   ⎝ vₙ+wₙ ⎠
 
 v ^+^ w = AccVector $ A.zipWith (+) (unVector v) (unVector w)
+-- | the usual vector subtraction
+--
+-- > ⎛v₁⎞   ⎛w₁⎞   ⎛ v₁-w₁ ⎞
+-- > ⎜v₂⎟   ⎜w₂⎟   ⎜ v₂-w₁ ⎟
+-- > ⎜. ⎟   ⎜. ⎟   ⎜   .   ⎟
+-- > ⎜. ⎟ - ⎜. ⎟ = ⎜   .   ⎟
+-- > ⎜. ⎟   ⎜. ⎟   ⎜   .   ⎟
+-- > ⎜. ⎟   ⎜. ⎟   ⎜   .   ⎟
+-- > ⎝vₙ⎠   ⎝wₙ⎠   ⎝ vₙ-wₙ ⎠
+
+(^-^) :: forall n a. (KnownNat n, IsNum a, Elt a)
+             => AccVector n a -> AccVector n a -> AccVector n a
 v ^-^ w = AccVector $ A.zipWith (-) (unVector v) (unVector w)
 
 infixl 6 ^+^
@@ -168,7 +180,7 @@ infixl 6 ^-^
 
 (^*^) :: forall n a. (KnownNat n, IsNum a, Elt a)
       => AccVector n a -> AccVector n a -> AccScalar a
--- | the usual vector addition/subtraction
+-- | the usual inner product of two vectors
 --
 -- > ⎛v₁⎞   ⎛w₁⎞
 -- > ⎜v₂⎟   ⎜w₂⎟
@@ -182,9 +194,9 @@ v ^*^ w = AccScalar $ A.sum $ A.zipWith (*) (unVector v) (unVector w)
 
 infixl 7 ^*^
 
-(#+#), (#-#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
-             => AccMatrix m n a -> AccMatrix m n a -> AccMatrix m n a
--- | the usual vector addition/subtraction
+(#+#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
+      => AccMatrix m n a -> AccMatrix m n a -> AccMatrix m n a
+-- | the usual matrix addition/subtraction
 --
 -- > ⎛ v₁₁ v₁₂ … v₁ₙ ⎞     ⎛ w₁₁ w₁₂ … w₁ₙ ⎞     ⎛ v₁₁+w₁₁ v₁₂+w₁₂ … v₁ₙ+w₁ₙ ⎞
 -- > ⎜ v₂₁ v₂₂ … v₂ₙ ⎟     ⎜ w₂₁ w₂₂ … w₂ₙ ⎟     ⎜ v₂₁+w₂₁ v₂₂+w₂₂ … v₂ₙ+w₂ₙ ⎟
@@ -195,6 +207,19 @@ infixl 7 ^*^
 -- > ⎝ vₘ₁ vₘ₂ … vₘₙ ⎠     ⎝ wₘ₁ wₘ₂ … wₘₙ ⎠     ⎝ vₘ₁+wₘ₁ wₘ₂+vₘ₂ … vₘₙ+wₘₙ ⎠
 
 v #+# w = AccMatrix $ A.zipWith (+) (unMatrix v) (unMatrix w)
+
+(#-#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
+      => AccMatrix m n a -> AccMatrix m n a -> AccMatrix m n a
+-- | the usual matrix addition/subtraction
+--
+-- > ⎛ v₁₁ v₁₂ … v₁ₙ ⎞     ⎛ w₁₁ w₁₂ … w₁ₙ ⎞     ⎛ v₁₁+w₁₁ v₁₂+w₁₂ … v₁ₙ+w₁ₙ ⎞
+-- > ⎜ v₂₁ v₂₂ … v₂ₙ ⎟     ⎜ w₂₁ w₂₂ … w₂ₙ ⎟     ⎜ v₂₁+w₂₁ v₂₂+w₂₂ … v₂ₙ+w₂ₙ ⎟
+-- > ⎜  .   .     .  ⎟     ⎜  .   .     .  ⎟     ⎜    .       .         .    ⎟
+-- > ⎜  .   .     .  ⎟  +  ⎜  .   .     .  ⎟  =  ⎜    .       .         .    ⎟
+-- > ⎜  .   .     .  ⎟     ⎜  .   .     .  ⎟     ⎜    .       .         .    ⎟
+-- > ⎜  .   .     .  ⎟     ⎜  .   .     .  ⎟     ⎜    .       .         .    ⎟
+-- > ⎝ vₘ₁ vₘ₂ … vₘₙ ⎠     ⎝ wₘ₁ wₘ₂ … wₘₙ ⎠     ⎝ vₘ₁+wₘ₁ wₘ₂+vₘ₂ … vₘₙ+wₘₙ ⎠
+
 v #-# w = AccMatrix $ A.zipWith (-) (unMatrix v) (unMatrix w)
 
 infixl 6 #+#
@@ -202,7 +227,7 @@ infixl 6 #-#
 
 (#*#) :: forall k m n a. (KnownNat k, KnownNat m, KnownNat n, IsNum a, Elt a)
       => AccMatrix k m a -> AccMatrix m n a -> AccMatrix k n a
--- | the usual vector addition/subtraction
+-- | the usual matrix multiplication
 --
 -- > ⎛ v₁₁ v₁₂ … v₁ₘ ⎞     ⎛ w₁₁ w₁₂ … w₁ₙ ⎞     ⎛ (v₁₁*w₁₁+v₁₂*w₂₁+…+v₁ₘ*wₘ₁) . . . (v₁₁*w₁ₙ+v₁₂*w₂ₙ+…+v₁ₘ*wₘₙ) ⎞
 -- > ⎜ v₂₁ v₂₂ … v₂ₘ ⎟     ⎜ w₂₁ w₂₂ … w₂ₙ ⎟     ⎜            .                                  .               ⎟
@@ -229,7 +254,7 @@ infixl 7 #*#
 
 (.*^) :: forall n a. (KnownNat n, IsNum a, Elt a)
       => Exp a -> AccVector n a -> AccVector n a
--- | the usual matrix-vector product
+-- | the usual multiplication of a scalar with a vector
 --
 -- >     ⎛x₁⎞   ⎛ a*x₁ ⎞
 -- >     ⎜x₂⎟   ⎜ a*x₂ ⎟
@@ -244,6 +269,15 @@ a .*^ v = let v' = unVector v
 
 (./^) :: forall n a. (KnownNat n, IsFloating a, Elt a)
       => Exp a -> AccVector n a -> AccVector n a
+-- | a convenient helper deviding every element of a vector
+--
+-- >     ⎛x₁⎞   ⎛ x₁/a ⎞
+-- >     ⎜x₂⎟   ⎜ x₂/a ⎟
+-- >     ⎜. ⎟   ⎜  .   ⎟
+-- > a / ⎜. ⎟ = ⎜  .   ⎟
+-- >     ⎜. ⎟   ⎜  .   ⎟
+-- >     ⎜. ⎟   ⎜  .   ⎟
+-- >     ⎝xₙ⎠   ⎝ xₙ/a ⎠
 a ./^ v = let v' = unVector v
           in AccVector $ A.map (/ a) v'
 
@@ -252,7 +286,7 @@ infixl 7 ./^
 
 (.*#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
       => Exp a -> AccMatrix m n a -> AccMatrix m n a
--- | the usual matrix-vector product
+-- | the usual multiplication of a scalar with a matrix
 --
 -- >     ⎛ w₁₁ w₁₂ … w₁ₙ ⎞    ⎛ a*w₁₁ a*w₁₂ … a*w₁ₙ ⎞
 -- >     ⎜ w₂₁ w₂₂ … w₂ₙ ⎟    ⎜ a*w₂₁ a*w₂₂ … a*w₂ₙ ⎟
@@ -267,6 +301,15 @@ a .*# v = let v' = unMatrix v
 
 (./#) :: forall m n a. (KnownNat m ,KnownNat n, IsFloating a, Elt a)
       => Exp a -> AccMatrix m n a -> AccMatrix m n a
+-- | a convenient helper deviding every element of a matrix
+--
+-- >     ⎛ w₁₁ w₁₂ … w₁ₙ ⎞    ⎛ w₁₁/a w₁₂/a … w₁ₙ/a ⎞
+-- >     ⎜ w₂₁ w₂₂ … w₂ₙ ⎟    ⎜ w₂₁/a w₂₂/a … w₂ₙ/a ⎟
+-- >     ⎜  .   .     .  ⎟    ⎜  .      .      .    ⎟
+-- > a / ⎜  .   .     .  ⎟ =  ⎜  .      .      .    ⎟
+-- >     ⎜  .   .     .  ⎟    ⎜  .      .      .    ⎟
+-- >     ⎜  .   .     .  ⎟    ⎜  .      .      .    ⎟
+-- >     ⎝ wₘ₁ wₘ₂ … wₘₙ ⎠    ⎝ wₘ₁/a wₘ₂/a … wₘₙ/a ⎠
 a ./# v = let v' = unMatrix v
           in AccMatrix $ A.map (/ a) v'
 
@@ -275,10 +318,13 @@ infixl 7 ./#
 
 (#**.) :: forall n a. (KnownNat n, IsNum a, Elt a)
        => AccMatrix n n a -> Int -> AccMatrix n n a
+-- | the exponentiation of a square matrix with an `Int`. Negative exponents
+-- raise an error - as inverse matrices are not yet implemented.
+--
 -- > ⎛ v₁₁ v₁₂ … v₁ₙ ⎞ k
 -- > ⎜ v₂₁ v₂₂ … v₂ₙ ⎟
 -- > ⎜  .   .     .  ⎟
--- > ⎜  .   .     .  ⎟ 
+-- > ⎜  .   .     .  ⎟
 -- > ⎜  .   .     .  ⎟
 -- > ⎜  .   .     .  ⎟
 -- > ⎝ vₙ₁ vₙ₂ … vₙₙ ⎠
@@ -293,13 +339,18 @@ infixr 8 #**.
 
 transpose :: forall m n a. (KnownNat m, KnownNat n, Elt a)
           => AccMatrix m n a -> AccMatrix n m a
+-- | transpose for matrices - note the dimension of the matrix change.
 transpose = AccMatrix . A.transpose . unMatrix
 
 
 zipWithM :: forall m n a b c. (KnownNat m, KnownNat n, Elt a, Elt b, Elt c)
         => (Exp a -> Exp b -> Exp c) -> AccMatrix m n a -> AccMatrix m n b -> AccMatrix m n c
+-- | the pendant of the usual zipWith function for matrices, but can only be
+-- used with the same dimensions for both input
 zipWithM f ma mb = AccMatrix $ A.zipWith f (unMatrix ma) (unMatrix mb)
 
 zipWithV :: forall n a b c. (KnownNat n, Elt a, Elt b, Elt c)
         => (Exp a -> Exp b -> Exp c) -> AccVector n a -> AccVector n b -> AccVector n c
+-- | the pendant of the usual zipWith function for vectors, but can only be
+-- used with the same dimensions for both input
 zipWithV f ma mb = AccVector $ A.zipWith f (unVector ma) (unVector mb)

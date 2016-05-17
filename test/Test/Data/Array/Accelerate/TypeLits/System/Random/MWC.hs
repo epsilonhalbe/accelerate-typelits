@@ -1,16 +1,14 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Test.Data.Array.Accelerate.TypeLits.Random where
+module Test.Data.Array.Accelerate.TypeLits.System.Random.MWC where
 
 import Test.Tasty
 import Test.Tasty.SmallCheck as SC
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
 
-main :: IO ()
-main = defaultMain tests
-
 tests :: TestTree
-tests = testGroup "Tests" [properties, unitTests]
+tests = testGroup "Test.Data.Array.Accelerate.TypeLits.System.Random.MWC"
+                  [properties, unitTests]
 
 properties :: TestTree
 properties = testGroup "Properties" [scProps, qcProps]

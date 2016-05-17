@@ -56,13 +56,19 @@ TODOs
 -----
 
 - use library for neural network stuff
+   + TODO
 - write Test cases
    + unit tests
+       * STARTED
    + property tests
+       * Smallcheck - DONE
+       * Quickcheck - TODO
        * Arbitrary instances - DONE
        * Series instances - DONE
 - write benchmarks
+   + TODO
 - write examples
+   + TODO
 - write random matrices - DONE
 
 Credits

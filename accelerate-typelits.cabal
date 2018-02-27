@@ -20,9 +20,10 @@ category:            Math
 build-type:          Simple
 extra-source-files:  ChangeLog.md
                   ,  Readme.md
+                  ,  stack.yaml
                   ,  stack-7.10.yaml
 cabal-version:       >=1.22
-tested-with:         GHC == 7.10.3
+tested-with:         GHC == 8.2.2
 
 source-repository head
   type:     git

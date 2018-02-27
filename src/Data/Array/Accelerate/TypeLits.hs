@@ -57,10 +57,10 @@ import           Data.Array.Accelerate.TypeLits.Internal
 import           Data.Array.Accelerate ( (:.)((:.))
                                        , Exp
                                        , DIM2, DIM3, Z(Z)
-                                       , IsFloating, IsNum, Elt
+                                       , Elt
                                        , All(All), Any(Any))
 
-identityMatrix :: forall n a. (KnownNat n, IsNum a, Elt a) => AccMatrix n n a
+identityMatrix :: forall n a. (KnownNat n, Num a, A.Num a, Elt a) => AccMatrix n n a
 -- | constructor for the nxn dimensional identity matrix, given by
 --
 -- > ⎛  1  0  …  0  0  ⎞
@@ -76,7 +76,7 @@ identityMatrix = AccMatrix $ A.use $ A.fromFunction (Z:.n':.n') aux
         aux (Z:.i:.j) = if i == j then 1 else 0
         n' = fromIntegral $ natVal (Proxy :: Proxy n)
 
-zeroV :: forall n a. (KnownNat n, IsNum a, Elt a) => AccVector n a
+zeroV :: forall n a. (KnownNat n, Num a, A.Num a, Elt a) => AccVector n a
 -- | constructor for the n dimensional zero vector, given by
 --
 -- > ⎛ 0 ⎞
@@ -90,7 +90,7 @@ zeroV :: forall n a. (KnownNat n, IsNum a, Elt a) => AccVector n a
 zeroV = unsafeMkVector $ replicate n' 0
   where n' = fromIntegral $ natVal (Proxy :: Proxy n)
 
-zeroM :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a) => AccMatrix m n a
+zeroM :: forall m n a. (KnownNat m, KnownNat n, Num a, A.Num a, Elt a) => AccMatrix m n a
 -- | constructor for the mxn dimensional zero matrix, given by
 --
 -- > ⎛  0  0  …  0  0  ⎞
@@ -104,7 +104,7 @@ zeroM = unsafeMkMatrix $ replicate (m'*n') 0
         m' = fromIntegral $ natVal (Proxy :: Proxy m)
 
 
-(#*^) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
+(#*^) :: forall m n a. (KnownNat m, KnownNat n, A.Num a, Elt a)
       => AccMatrix m n a -> AccVector n a -> AccVector n a
 -- | the usual matrix-vector product
 --
@@ -126,7 +126,7 @@ ma #*^ va = let ma' = unMatrix ma
 
 infixl 7 #*^
 
-(^*#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
+(^*#) :: forall m n a. (KnownNat m, KnownNat n, A.Num a, Elt a)
       => AccVector m a -> AccMatrix m n a -> AccVector n a
 -- | the usual vector-matrix product
 --
@@ -148,7 +148,7 @@ va ^*# ma = let va' = unVector va
 
 infixr 7 ^*#
 
-(^+^) :: forall n a. (KnownNat n, IsNum a, Elt a)
+(^+^) :: forall n a. (KnownNat n, A.Num a, Elt a)
       => AccVector n a -> AccVector n a -> AccVector n a
 -- | the usual vector addition
 --
@@ -171,14 +171,14 @@ v ^+^ w = AccVector $ A.zipWith (+) (unVector v) (unVector w)
 -- > ⎜. ⎟   ⎜. ⎟   ⎜   .   ⎟
 -- > ⎝vₙ⎠   ⎝wₙ⎠   ⎝ vₙ-wₙ ⎠
 
-(^-^) :: forall n a. (KnownNat n, IsNum a, Elt a)
+(^-^) :: forall n a. (KnownNat n, A.Num a, Elt a)
              => AccVector n a -> AccVector n a -> AccVector n a
 v ^-^ w = AccVector $ A.zipWith (-) (unVector v) (unVector w)
 
 infixl 6 ^+^
 infixl 6 ^-^
 
-(^*^) :: forall n a. (KnownNat n, IsNum a, Elt a)
+(^*^) :: forall n a. (KnownNat n, A.Num a, Elt a)
       => AccVector n a -> AccVector n a -> AccScalar a
 -- | the usual inner product of two vectors
 --
@@ -194,7 +194,7 @@ v ^*^ w = AccScalar $ A.sum $ A.zipWith (*) (unVector v) (unVector w)
 
 infixl 7 ^*^
 
-(#+#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
+(#+#) :: forall m n a. (KnownNat m, KnownNat n, A.Num a, Elt a)
       => AccMatrix m n a -> AccMatrix m n a -> AccMatrix m n a
 -- | the usual matrix addition/subtraction
 --
@@ -208,7 +208,7 @@ infixl 7 ^*^
 
 v #+# w = AccMatrix $ A.zipWith (+) (unMatrix v) (unMatrix w)
 
-(#-#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
+(#-#) :: forall m n a. (KnownNat m, KnownNat n, A.Num a, Elt a)
       => AccMatrix m n a -> AccMatrix m n a -> AccMatrix m n a
 -- | the usual matrix addition/subtraction
 --
@@ -225,7 +225,7 @@ v #-# w = AccMatrix $ A.zipWith (-) (unMatrix v) (unMatrix w)
 infixl 6 #+#
 infixl 6 #-#
 
-(#*#) :: forall k m n a. (KnownNat k, KnownNat m, KnownNat n, IsNum a, Elt a)
+(#*#) :: forall k m n a. (KnownNat k, KnownNat m, KnownNat n, A.Num a, Elt a)
       => AccMatrix k m a -> AccMatrix m n a -> AccMatrix k n a
 -- | the usual matrix multiplication
 --
@@ -252,7 +252,7 @@ v #*# w = AccMatrix $ A.fold1 (+)
 
 infixl 7 #*#
 
-(.*^) :: forall n a. (KnownNat n, IsNum a, Elt a)
+(.*^) :: forall n a. (KnownNat n, A.Num a, Elt a)
       => Exp a -> AccVector n a -> AccVector n a
 -- | the usual multiplication of a scalar with a vector
 --
@@ -267,7 +267,7 @@ infixl 7 #*#
 a .*^ v = let v' = unVector v
           in AccVector $ A.map (* a) v'
 
-(./^) :: forall n a. (KnownNat n, IsFloating a, Elt a)
+(./^) :: forall n a. (KnownNat n, A.Floating a, Elt a)
       => Exp a -> AccVector n a -> AccVector n a
 -- | a convenient helper deviding every element of a vector
 --
@@ -284,7 +284,7 @@ a ./^ v = let v' = unVector v
 infixl 7 .*^
 infixl 7 ./^
 
-(.*#) :: forall m n a. (KnownNat m, KnownNat n, IsNum a, Elt a)
+(.*#) :: forall m n a. (KnownNat m, KnownNat n, A.Num a, Elt a)
       => Exp a -> AccMatrix m n a -> AccMatrix m n a
 -- | the usual multiplication of a scalar with a matrix
 --
@@ -299,7 +299,7 @@ infixl 7 ./^
 a .*# v = let v' = unMatrix v
           in AccMatrix $ A.map (* a) v'
 
-(./#) :: forall m n a. (KnownNat m ,KnownNat n, IsFloating a, Elt a)
+(./#) :: forall m n a. (KnownNat m ,KnownNat n, A.Floating a, Elt a)
       => Exp a -> AccMatrix m n a -> AccMatrix m n a
 -- | a convenient helper deviding every element of a matrix
 --
@@ -316,7 +316,7 @@ a ./# v = let v' = unMatrix v
 infixl 7 .*#
 infixl 7 ./#
 
-(#**.) :: forall n a. (KnownNat n, IsNum a, Elt a)
+(#**.) :: forall n a. (KnownNat n, A.Num a, Num a, Elt a)
        => AccMatrix n n a -> Int -> AccMatrix n n a
 -- | the exponentiation of a square matrix with an `Int`. Negative exponents
 -- raise an error - as inverse matrices are not yet implemented.

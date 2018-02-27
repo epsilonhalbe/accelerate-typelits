@@ -122,3 +122,9 @@ unsafeMkMatrix as = AccMatrix (A.use $ A.fromList (Z:. m':.n') as)
 mkScalar :: forall a. Elt a => Exp a -> AccScalar a
 -- | a smart constructor to generate scalars
 mkScalar = AccScalar . A.unit
+
+withMatrixIndex ::
+   (A.Shape ix, A.Slice ix, A.Lift Exp a) =>
+   (Exp ix :. Exp Int :. Exp Int -> a) ->
+   (Exp (ix :. Int :. Int) -> Exp (A.Plain a))
+withMatrixIndex f = A.lift . f . A.unlift

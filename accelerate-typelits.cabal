@@ -57,19 +57,21 @@ test-suite tests
   main-is:             Test.hs
   --exposed-modules:
   other-modules:       Test.Data.Array.Accelerate.TypeLits
-  build-depends:       base                >= 4.8  && <5
-               ,       accelerate          >= 0.15 && < 0.16
-               ,       accelerate-random   >= 0.15 && < 0.16
-               ,       accelerate-typelits >= 0.1  && < 0.2
-               ,       HUnit-Plus          >= 1.1  && < 1.2
-               ,       mwc-random          >= 0.13 && < 0.14
-               ,       QuickCheck          >= 2.8  && < 2.9
-               ,       smallcheck          >= 1.1  && < 1.2
-               ,       tasty               >= 0.11 && < 0.12
-               ,       tasty-hunit         >= 0.9  && < 0.10
-               ,       tasty-quickcheck    >= 0.8  && < 0.9
-               ,       tasty-smallcheck    >= 0.8  && < 0.9
-
+                     , Test.Data.Array.Accelerate.TypeLits.Internal
+                     , Test.Data.Array.Accelerate.TypeLits.System.Random.MWC
+  build-depends:       base                  >= 4.8  && < 5
+               ,       accelerate            >= 1.0  && < 1.2
+               ,       mwc-random-accelerate >= 0.1  && < 0.2
+               ,       accelerate-typelits   >= 0.1  && < 0.2
+               ,       HUnit-Plus            >= 1.1  && < 2.1
+               ,       mwc-random            >= 0.13 && < 0.14
+               ,       QuickCheck            >= 2.8  && < 2.11
+               ,       smallcheck            >= 1.1  && < 1.2
+               ,       tasty                 >= 0.11 && < 0.12
+               ,       tasty-hunit           >= 0.9  && < 0.10
+               ,       tasty-quickcheck      >= 0.8  && < 0.10
+               ,       tasty-smallcheck      >= 0.8  && < 0.9
+  
   hs-source-dirs:      test
   default-language:    Haskell2010
 

@@ -20,7 +20,7 @@ matrix:
             - happy-1.19.5
             - alex-3.1.4
 
-    - env: GHC=8.2.2 CABAL=2.0.0.1
+    - env: GHC=8.2.2 CABAL=2.0
       compiler: "GHC 8.2.2"
       addons:
         apt:
@@ -74,15 +74,15 @@ install:
   - llc --version; true
   - |
       if [ ${GHC} != head ]; then
-        travis_retry stack build --only-dependencies --no-terminal --no-haddock-deps -j2
+        travis_retry stack build --stack-yaml stack-$GHC.yaml --only-dependencies --no-terminal --no-haddock-deps -j2
       else
         travis_retry cabal install --only-dependencies --allow-newer
       fi
 script:
   - |
       if [ ${GHC} != head ]; then
-        stack build --no-terminal --haddock --no-haddock-deps
-        stack test --coverage
+        stack build --stack-yaml stack-$GHC.yaml --no-terminal --haddock --no-haddock-deps
+        stack test  --stack-yaml stack-$GHC.yaml --coverage
       else
         cabal install --allow-newer
       fi
